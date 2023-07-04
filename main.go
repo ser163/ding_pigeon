@@ -6,6 +6,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
@@ -84,6 +85,20 @@ func main() {
 	picURL := flag.String("pic", "", "图片链接")
 	flag.Parse()
 	config = *configd
+
+	if *content == "" && !isInputFromPipe() {
+		fmt.Println("请提供消息内容")
+		flag.PrintDefaults()
+		return
+	}
+
+	if *content == "" && isInputFromPipe() {
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			*content += scanner.Text()
+		}
+	}
+
 	message := Message{MsgType: *msgType}
 	switch *msgType {
 	case "text":
@@ -149,4 +164,9 @@ func getSignature(secret string) (string, string) {
 	data := hmac256.Sum(nil)
 	signature := base64.StdEncoding.EncodeToString(data)
 	return url.QueryEscape(signature), timestamp
+}
+
+func isInputFromPipe() bool {
+	fileInfo, _ := os.Stdin.Stat()
+	return fileInfo.Mode()&os.ModeCharDevice == 0
 }
