@@ -23,5 +23,7 @@ go build -ldflags "-s -w" -o dpingeon main.go
 ```
 windows下交叉编译
 ```shell
-GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o dpingeon main.go
+set GOOS=linux
+set GOARCH=amd64 
+go build -ldflags "-s -w" -o dpingeon main.go
 ```

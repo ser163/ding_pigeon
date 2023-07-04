@@ -77,7 +77,7 @@ var config = ""
 
 func main() {
 	msgType := flag.String("type", "text", "消息类型: text, link, markdown")
-	configd := flag.String("conf", "config.yaml", "配置文件路径: config.yaml(默认)")
+	configd := flag.String("conf", "config.yaml", "配置文件路径")
 	content := flag.String("content", "", "消息内容")
 	title := flag.String("title", "", "消息标题")
 	messageURL := flag.String("url", "", "消息链接")
