@@ -17,6 +17,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -27,7 +29,16 @@ type Config struct {
 }
 
 func getConfig() Config {
-	data, err := ioutil.ReadFile(config)
+	exe, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exePath := filepath.Dir(exe)
+	configFile := config
+	if config == "config.yaml" {
+		configFile = filepath.Join(exePath, config)
+	}
+	data, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		panic(err)
 	}
