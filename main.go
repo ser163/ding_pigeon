@@ -27,7 +27,7 @@ type Config struct {
 }
 
 func getConfig() Config {
-	data, err := ioutil.ReadFile("config.yaml")
+	data, err := ioutil.ReadFile(config)
 	if err != nil {
 		panic(err)
 	}
@@ -62,14 +62,17 @@ type MarkDownMessage struct {
 	Text  string `json:"text"`
 }
 
+var config = ""
+
 func main() {
 	msgType := flag.String("type", "text", "消息类型: text, link, markdown")
+	configd := flag.String("conf", "config.yaml", "配置文件路径: config.yaml(默认)")
 	content := flag.String("content", "", "消息内容")
 	title := flag.String("title", "", "消息标题")
 	messageURL := flag.String("url", "", "消息链接")
 	picURL := flag.String("pic", "", "图片链接")
 	flag.Parse()
-
+	config = *configd
 	message := Message{MsgType: *msgType}
 	switch *msgType {
 	case "text":
@@ -105,6 +108,7 @@ func sendMessage(message Message) {
 	signature, timestamp := getSignature(config.Secret)
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", config.Webhook+"&timestamp="+timestamp+"&sign="+signature, bytes.NewBuffer(data))
+	fmt.Printf("传参: %s\n", config.Webhook+"&timestamp="+timestamp+"&sign="+signature)
 	if err != nil {
 		fmt.Println(err)
 		return
